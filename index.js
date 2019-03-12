@@ -2,7 +2,16 @@ const puppeteer = require('puppeteer-core');
 const axios = require('axios');
 const fs = require('fs');
 const dirName = process.argv[2];
-let currentChapter = 197;
+let currentChapter = 1;
+
+function sleep(time) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve()
+        }, time)
+    })
+}
+
 (async function run(url) {
     require('events').EventEmitter.defaultMaxListeners = 0;
     const browser = await puppeteer.launch({
@@ -41,7 +50,7 @@ let currentChapter = 197;
         }
         const imgUrlArr = (await Promise.all(promiseUrlArr)).filter(item => {
             if (!(new RegExp("[\\u4E00-\\u9FFF]+", "g").test(item))) {
-               return item
+                return item
             }
         });
         let promiseArr = [];
@@ -81,7 +90,9 @@ let currentChapter = 197;
                 await browser.close();
                 return false
             }
-            run(`https://www.tohomh123.com/${dirName}/${currentChapter}.html`)
+            console.log('开始延迟5s');
+            await sleep(5000);
+            await run(`https://www.tohomh123.com/${dirName}/${currentChapter}.html`)
         });
     } catch (error) {
         console.error(error, '全局抛出错误');
