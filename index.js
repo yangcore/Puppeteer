@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer-core');
 const axios = require('axios');
 const fs = require('fs');
 const dirName = process.argv[2];
-let currentChapter = 1;
+let currentChapter = 197;
 (async function run(url) {
     require('events').EventEmitter.defaultMaxListeners = 0;
     const browser = await puppeteer.launch({
@@ -39,7 +39,11 @@ let currentChapter = 1;
             promiseUrlArr.push(getImageUrl(3, pcount));
             pcount--;
         }
-        const imgUrlArr = await Promise.all(promiseUrlArr);
+        const imgUrlArr = (await Promise.all(promiseUrlArr)).filter(item => {
+            if (!(new RegExp("[\\u4E00-\\u9FFF]+", "g").test(item))) {
+               return item
+            }
+        });
         let promiseArr = [];
         imgUrlArr.forEach(item => {
             const imgName = item.split('/')[item.split('/').length - 1];
